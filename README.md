@@ -1,0 +1,1 @@
+Proyecto con propósito educativo donde se desarrolla el Front de un proyecto que luego se integra con el backend que se une a la base de datos en Firestore.
