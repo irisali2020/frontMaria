@@ -1,12 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import 'react-toastify/dist/ReactToastify.css';
 import App from './App.jsx';
-import { BrowserRouter } from 'react-router-dom'; // 1. Agrega esta importación
+import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.jsx';
+
+// 👇 AGREGA ESTA(S) LÍNEA(S) 👇
+import './index.css'; 
+import 'bootstrap/dist/css/bootstrap.min.css'; 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    {/* 2. Envuelve tu App con BrowserRouter */}
     <BrowserRouter> 
       <AuthProvider>
         <App />
