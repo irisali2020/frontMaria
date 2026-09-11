@@ -1,5 +1,24 @@
 import React, { useState, useEffect } from 'react';
 
+const CATEGORIAS_VALIDAS = [
+  'cocina',
+  'lavanderia',
+  'entretenimiento',
+  'playa',
+  'sala',
+  'viaje',
+  'dormitorio',
+  'sitio de trabajo',
+  'estudio',
+  'varios',
+  'balcon',
+  'ropa',
+  'salud',
+  'comedor',
+  'adorno',
+  'miscelaneos'
+];
+
 export default function FormularioProducto({ productoActual, onExito, onCancelar }) {
   const [formData, setFormData] = useState({
     nombre: '',
@@ -14,15 +33,29 @@ export default function FormularioProducto({ productoActual, onExito, onCancelar
 
   useEffect(() => {
     if (productoActual) {
-      // Si el boolean es true/false, lo pasamos a string para el <select>
-      setFormData({
-        ...productoActual,
-        vendido: String(productoActual.vendido)
-      });
-    } else {
-      setFormData({ nombre: '', precio: '', categoria: '', imagen: '', condicion: '', vendido: 'false' });
-    }
-  }, [productoActual]);
+      console.log('Datos que recibe el formulario:', productoActual); // 👈 Verifica en consola los nombres exactos
+
+    setFormData({
+      nombre: productoActual.nombre || '',
+      precio: productoActual.precio !== undefined ? productoActual.precio : '',
+      // Convertimos a minúsculas para que coincida con las opciones del <select>:
+      categoria: productoActual.categoria ? productoActual.categoria.toLowerCase() : '',
+      condicion: productoActual.condicion ? productoActual.condicion.toLowerCase() : '',
+      imagen: productoActual.imagen || '',
+      // Verificamos si es booleano o string true:
+      vendido: productoActual.vendido === true || productoActual.vendido === 'true' ? 'true' : 'false'
+    });
+  } else {
+    setFormData({
+      nombre: '',
+      precio: '',
+      categoria: '',
+      imagen: '',
+      condicion: '',
+      vendido: 'false'
+    });
+  }
+}, [productoActual]);  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -112,13 +145,18 @@ export default function FormularioProducto({ productoActual, onExito, onCancelar
 
         <div style={estilos.grupo}>
           <label>Categoría:</label>
-          <select name="categoria" value={formData.categoria} onChange={handleChange} style={estilos.input}>
+          <select 
+            name="categoria" 
+            value={formData.categoria} 
+            onChange={handleChange} 
+            style={estilos.input}
+          >
             <option value="">-- Selecciona --</option>
-            <option value="ropa">Ropa</option>
-            <option value="accesorios">Accesorios</option>
-            <option value="hogar">Hogar</option>
-            <option value="electronica">Electrónica</option>
-            <option value="otros">Otros</option>
+            {CATEGORIAS_VALIDAS.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
           </select>
           {errores.categoria && <span style={estilos.error}>{errores.categoria}</span>}
         </div>

@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import FormularioProducto from '../componentes/FormularioProducto'; 
+
 
 function Dashboard() {
   const { logout } = useAuth();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    logout();
+    navigate('/'); // Redirige al login tras cerrar sesión
+  };
   
   const [productos, setProductos] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -86,8 +93,8 @@ function Dashboard() {
           <h1>Panel de Administración</h1>
           <p>Gestión de Catálogo - TiendaMaría</p>
         </div>
-        <button 
-          onClick={logout}
+        <button type="button"  
+          onClick={handleLogout}
           style={{ padding: '8px 12px', backgroundColor: '#555', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
         >
           Cerrar Sesión

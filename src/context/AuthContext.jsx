@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = (email, password) => {
     // CAMBIO 1: Actualizamos el correo para TiendaMaría
-    if (email === 'admin@tiendamaria.com' && password === 'admin123') {
+    if (email === 'admin@tiendamaria.com' && password === 'arti3489') {
       
       // CAMBIO 2: Actualizamos el nombre del token simulado
       const tokenSimulado = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mockTokenParaTiendaMaria";
