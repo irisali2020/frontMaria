@@ -16,27 +16,33 @@ const Productos = ({ alHacerClickContacto }) => {
   const { usuarioLogueado } = useAuth();
 
   useEffect(() => {
-    const obtenerProductos = async () => {
-      setCargando(true);
-      try {
-        const url = `${import.meta.env.VITE_API_URL}/products?page=${paginaActual}&search=${busqueda}&category=${categoria}`;
-        
-        const respuesta = await fetch(url);        
-        const datos = await respuesta.json();
-        console.log("Respuesta del backend:", datos);
+  const obtenerProductos = async () => {
+    setCargando(true);
+    try {
+      // Tomamos la URL base (de Vercel o de localhost si estás en local)
+      const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3001"; // usa el puerto de tu backend local
 
-        setListaProductos(datos.productos || datos); 
-        if (datos.totalPages) setTotalPaginas(datos.totalPages);
-        
-      } catch (error) {
-        console.error("Error al obtener los productos:", error);
-      } finally {
-        setCargando(false);
-      }
-    };
+      // Agregamos /api/products con sus parámetros
+      const url = `${baseUrl}/api/products?page=${paginaActual}&search=${busqueda}&category=${categoria}`;
+      
+      const respuesta = await fetch(url);        
+      const datos = await respuesta.json();
+      console.log("Respuesta del backend:", datos);
 
-    obtenerProductos();
-  }, [paginaActual, busqueda, categoria]); 
+      setListaProductos(datos.productos || datos); 
+      if (datos.totalPages) setTotalPaginas(datos.totalPages);
+      
+    } catch (error) {
+      console.error("Error al obtener los productos:", error);
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  obtenerProductos();
+}, [paginaActual, busqueda, categoria]);
+
+  
 
   return (
     <div className="container my-5">
