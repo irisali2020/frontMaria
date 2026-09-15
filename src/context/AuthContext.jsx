@@ -9,19 +9,36 @@ export const AuthProvider = ({ children }) => {
 
   const usuarioLogueado = Boolean(token);
 
-  const login = (email, password) => {
-    // CAMBIO 1: Actualizamos el correo para TiendaMaría
-    if (email === 'admin@tiendamaria.com' && password === 'arti3489') {
-      
-      // CAMBIO 2: Actualizamos el nombre del token simulado
-      const tokenSimulado = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mockTokenParaTiendaMaria";
-      
-      setToken(tokenSimulado);
-      localStorage.setItem('token_sesion', tokenSimulado);
-      
-      return true;
+  const login = async (email, password) => {
+    try {
+      // Tomamos la URL del backend desde la variable de entorno o localhost
+      const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
+      const respuesta = await fetch(`${baseUrl}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await respuesta.json();
+
+      if (respuesta.ok && data.success) {
+        // Generamos o asignamos el token de sesión
+        const tokenSimulado = data.token || "mockTokenParaTiendaMaria";
+
+        setToken(tokenSimulado);
+        localStorage.setItem('token_sesion', tokenSimulado);
+
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      console.error("Error en la autenticación:", error);
+      return false;
     }
-    return false;
   };
 
   const logout = () => {

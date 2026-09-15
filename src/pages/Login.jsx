@@ -7,6 +7,7 @@ import styled from 'styled-components';
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [cargando, setCargando] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
@@ -14,24 +15,31 @@ function Login() {
   // Redirigimos al dashboard por defecto si no viene de una ruta protegida
   const from = location.state?.from?.pathname || "/dashboard";
 
-  const manejarEnvio = (e) => {
+  const manejarEnvio = async (e) => {
     e.preventDefault();
-    
-    const esValido = login(email, password);
+    setCargando(true);
 
-    if (esValido) {
-      toast.success('¡Bienvenido! Sesión iniciada correctamente.');
-      navigate(from, { replace: true });
-    } else {
-      // Actualizamos el mensaje con las credenciales de TiendaMaría
-      toast.error('Credenciales incorrectas. Usa admin@tiendamaria.com y admin123');
+    try {
+      // Llamada asíncrona al login conectado con el backend
+      const esValido = await login(email, password);
+
+      if (esValido) {
+        toast.success('¡Bienvenido! Sesión iniciada correctamente.');
+        navigate(from, { replace: true });
+      } else {
+        toast.error('Credenciales incorrectas. Verifica tu email y contraseña.');
+      }
+    } catch (error) {
+      toast.error('Error al conectar con el servidor.');
+    } finally {
+      setCargando(false);
     }
   };
 
   return (
     <div style={estilos.contenedor}>
       <form onSubmit={manejarEnvio} style={estilos.formulario}>
-        <h2 style={{marginBottom: '20px', color: '#333'}}>Acceso Administrativo</h2>
+        <h2 style={{ marginBottom: '20px', color: '#333' }}>Acceso Administrativo</h2>
         
         <input
           type="email"
@@ -39,6 +47,7 @@ function Login() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           style={estilos.input}
+          required
         />
         
         <input
@@ -47,10 +56,11 @@ function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           style={estilos.input}
+          required
         />
         
-        <BotonMagico type="submit">
-          Ingresar al Dashboard
+        <BotonMagico type="submit" disabled={cargando}>
+          {cargando ? 'Verificando...' : 'Ingresar al Dashboard'}
         </BotonMagico>
       </form>
     </div>
@@ -108,6 +118,12 @@ const BotonMagico = styled.button`
   &:active {
     transform: translateY(0); 
     box-shadow: 0 2px 5px rgba(117, 119, 241, 0.4); 
+  }
+
+  &:disabled {
+    background-color: #a0a2f3;
+    cursor: not-allowed;
+    transform: none;
   }
 `;
 
